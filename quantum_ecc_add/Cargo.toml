@@ -1,0 +1,37 @@
+[package]
+name = "quantum_ecc"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "build_circuit"
+path = "src/bin/build_circuit.rs"
+
+[[bin]]
+name = "eval_circuit"
+path = "src/bin/eval_circuit.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+debug = false
+
+[dependencies]
+rand = "0.8.5"
+ruint = "1.12"
+sha3 = "0.10"
+zstd = "0.13"
+hex = "0.4"
+
+k256 = { version = "0.13", features = ["ecdsa"] }  
+rand_core = { version = "0.6", features = ["std"] }
+aes-gcm = "0.11.0"
+alloy-primitives = "1.6.1"
+[[bin]]
+
+name = "superfast_encryption"
+path = "Superfast_Encryption.rs"
