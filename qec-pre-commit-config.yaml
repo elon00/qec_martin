@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: rustfmt
+        name: rustfmt
+        entry: bash -c 'cd quantum_ecc_add && cargo fmt --all -- --check'
+        language: system
+        pass_filenames: false
+        files: \.rs$
+
+      - id: clippy
+        name: clippy
+        entry: bash -c 'cd quantum_ecc_add && cargo clippy --all-targets --all-features -- -D warnings'
+        language: system
+        pass_filenames: false
+        files: \.rs$
