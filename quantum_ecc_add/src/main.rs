@@ -8,14 +8,14 @@ fn main() {
 
     // 2. Error Injection - Quantum Noise
     // Suppose due to environmental heat, the middle qubit (index 1) flips to 0.
-    qubits[1] = 0; 
+    qubits[1] = 0;
     println!("State after error (Noise): {:?}", qubits);
 
     // 3. Syndrome Measurement
     // We don't read the data directly; instead, we compare them in pairs.
     // s1: Are the first and second qubits the same?
     // s2: Are the second and third qubits the same?
-    let s1 = qubits[0] ^ qubits[1]; 
+    let s1 = qubits[0] ^ qubits[1];
     let s2 = qubits[1] ^ qubits[2];
     println!("Syndrome (s1, s2): ({}, {})", s1, s2);
 
@@ -26,15 +26,15 @@ fn main() {
         (1, 0) => {
             println!("🚨 Error in the first qubit (Index 0). Fixing it...");
             qubits[0] ^= 1; // Flip it back
-        },
+        }
         (1, 1) => {
             println!("🚨 Error in the second qubit (Index 1). Fixing it...");
             qubits[1] ^= 1; // Flip it back
-        },
+        }
         (0, 1) => {
             println!("🚨 Error in the third qubit (Index 2). Fixing it...");
             qubits[2] ^= 1; // Flip it back
-        },
+        }
         _ => println!("Too many errors! This code can only fix 1 error."),
     }
 

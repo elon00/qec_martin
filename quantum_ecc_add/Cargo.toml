@@ -31,7 +31,20 @@ k256 = { version = "0.13", features = ["ecdsa"] }
 rand_core = { version = "0.6", features = ["std"] }
 aes-gcm = "0.11.0"
 alloy-primitives = "1.6.1"
-[[bin]]
 
-name = "superfast_encryption"
-path = "Superfast_Encryption.rs"
+
+[[bin]]
+name = "digital_signature"
+path = "src/bin/digital_signature.rs"
+
+[[bin]]
+name = "ecc_key_gen"
+path = "src/bin/ecc_key_gen.rs"
+
+[[bin]]
+name = "lattice_simulation"
+path = "src/bin/lattice_simulation.rs"
+
+[[bin]]
+name = "lwe_encryption"
+path = "src/lwe_encryption.rs"

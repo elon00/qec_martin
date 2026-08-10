@@ -235,4 +235,3 @@ pub fn mod_mul_sub_inplace(b: &mut B, a: &[QubitId], x: &[QubitId], y: &[QubitId
     b.free_vec(&tmp);
     b.free_vec(&save);
 }
-

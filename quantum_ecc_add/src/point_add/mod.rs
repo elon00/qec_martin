@@ -98,7 +98,12 @@ struct B {
     pub owner_stack: Vec<&'static str>,
     pub owner_at_alloc: std::collections::BTreeMap<u64, &'static str>,
     // (active_count, phase_at_snapshot, ops_idx, owner_counts_grouped)
-    pub owner_snapshots: Vec<(u32, &'static str, usize, std::collections::BTreeMap<&'static str, u32>)>,
+    pub owner_snapshots: Vec<(
+        u32,
+        &'static str,
+        usize,
+        std::collections::BTreeMap<&'static str, u32>,
+    )>,
 }
 
 impl B {
@@ -193,11 +198,7 @@ impl B {
         if self.owner_enabled {
             // Record this qubit's owner: top of owner_stack if present,
             // otherwise the current phase. Pure metadata.
-            let owner: &'static str = self
-                .owner_stack
-                .last()
-                .copied()
-                .unwrap_or(self.phase);
+            let owner: &'static str = self.owner_stack.last().copied().unwrap_or(self.phase);
             self.owner_at_alloc.insert(q.0, owner);
             // Take a near-peak snapshot at this allocation. The final
             // peak is unknown yet; we filter at print time using
@@ -445,9 +446,7 @@ fn pair2_mul_karatsuba_enabled(n: usize) -> bool {
         .ok()
         .and_then(|v| v.parse::<usize>().ok())
         .unwrap_or(256);
-    point_add_karatsuba_enabled()
-        && n >= min_n
-        && env_flag_enabled("KAL_PAIR2_MUL_KARATSUBA", true)
+    point_add_karatsuba_enabled() && n >= min_n && env_flag_enabled("KAL_PAIR2_MUL_KARATSUBA", true)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2052,7 +2051,6 @@ fn cmod_sub_qq(b: &mut B, acc: &[QubitId], a: &[QubitId], ctrl: QubitId, p: U256
     b.free_vec(&f);
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────────────
 // Litinski add-subtract (arXiv:2410.00899) primitives
 // ─────────────────────────────────────────────────────────────────────────────────────
@@ -2961,13 +2959,7 @@ fn pair1_mul1_write_into_zero_acc(
     }
 }
 
-fn pair1_mul2_add_into_acc(
-    b: &mut B,
-    acc: &[QubitId],
-    x: &[QubitId],
-    y: &[QubitId],
-    p: U256,
-) {
+fn pair1_mul2_add_into_acc(b: &mut B, acc: &[QubitId], x: &[QubitId], y: &[QubitId], p: U256) {
     if pair1_mul2_karatsuba_enabled(acc.len()) {
         mod_mul_add_into_acc_karatsuba_lowq(b, acc, x, y, p);
     } else {
@@ -2975,13 +2967,7 @@ fn pair1_mul2_add_into_acc(
     }
 }
 
-fn pair2_mul_add_into_acc(
-    b: &mut B,
-    acc: &[QubitId],
-    x: &[QubitId],
-    y: &[QubitId],
-    p: U256,
-) {
+fn pair2_mul_add_into_acc(b: &mut B, acc: &[QubitId], x: &[QubitId], y: &[QubitId], p: U256) {
     if pair2_mul_karatsuba_enabled(acc.len()) {
         if env_flag_enabled("KAL_PAIR2_MUL_KARATSUBA_LOWQ", false) {
             mod_mul_add_into_acc_karatsuba_lowq(b, acc, x, y, p);
@@ -3911,7 +3897,9 @@ fn r_small_threshold() -> usize {
 const BULK_PREFIX_SAFE_ITERS: usize = 377;
 
 fn env_usize(name: &str) -> Option<usize> {
-    std::env::var(name).ok().and_then(|s| s.parse::<usize>().ok())
+    std::env::var(name)
+        .ok()
+        .and_then(|s| s.parse::<usize>().ok())
 }
 
 #[derive(Clone, Copy)]
@@ -5500,17 +5488,11 @@ fn emit_projective_n64_probe(b: &mut B, p: U256) {
 
     // ─── Report ────────────────────────────────────────────────────
     eprintln!("PROJECTIVE_N64_AFFINE_TOFFOLI={}", affine_toffoli);
-    eprintln!(
-        "PROJECTIVE_N64_PROJECTIVE_TOFFOLI={}",
-        projective_toffoli
-    );
+    eprintln!("PROJECTIVE_N64_PROJECTIVE_TOFFOLI={}", projective_toffoli);
     eprintln!("PROJECTIVE_N64_AFFINE_PEAK={}", affine_local_peak);
     eprintln!("PROJECTIVE_N64_PROJECTIVE_PEAK={}", projective_local_peak);
     eprintln!("PROJECTIVE_N64_AFFINE_PEAK_PHASE='{}'", affine_peak_phase);
-    eprintln!(
-        "PROJECTIVE_N64_PROJECTIVE_PEAK_PHASE='{}'",
-        proj_peak_phase
-    );
+    eprintln!("PROJECTIVE_N64_PROJECTIVE_PEAK_PHASE='{}'", proj_peak_phase);
 
     let kill_toffoli = projective_toffoli > affine_toffoli;
     let kill_peak = projective_local_peak > affine_local_peak;
@@ -8591,7 +8573,15 @@ fn with_kal_inv_raw<F: FnOnce(&mut B, &[QubitId])>(
     iters: usize,
     body: F,
 ) {
-    with_kal_inv_raw_coeff_caps(b, v_in, p, iters, None, bulk_prefix_caps(KalPair::Default), body);
+    with_kal_inv_raw_coeff_caps(
+        b,
+        v_in,
+        p,
+        iters,
+        None,
+        bulk_prefix_caps(KalPair::Default),
+        body,
+    );
 }
 
 fn with_kal_inv_raw_pair<F: FnOnce(&mut B, &[QubitId])>(
@@ -9025,8 +9015,8 @@ fn with_kal_inv_raw_prescaled_kind<F: FnOnce(&mut B, &[QubitId])>(
 // by default on Pair1). Defaults to 0 when KAL_PAIR1_INVKEEP_OUTSIDE_LAMBDA=1
 // to deliberately disable the suspected phase-batch source for the cleanup.
 fn cleanup_bulk_prefix_caps(pair: KalPair) -> BulkPrefixCaps {
-    let invkeep_active =
-        env_flag_enabled("KAL_PAIR1_INVKEEP_OUTSIDE_LAMBDA", false) && matches!(pair, KalPair::Pair1);
+    let invkeep_active = env_flag_enabled("KAL_PAIR1_INVKEEP_OUTSIDE_LAMBDA", false)
+        && matches!(pair, KalPair::Pair1);
     if !invkeep_active {
         // Outside the INVKEEP path callers don't use this helper.  Fall through
         // to the normal bulk prefix caps for safety.
@@ -9220,7 +9210,6 @@ fn with_kal_inv_raw_coeff<F: FnOnce(&mut B, &[QubitId])>(
         body,
     );
 }
-
 
 fn with_kal_inv_raw_coeff_caps<F: FnOnce(&mut B, &[QubitId])>(
     b: &mut B,
@@ -9676,7 +9665,9 @@ fn build_standard_point_add(
             || prescale_pair1_folded
             || prescale_pair1_folded_chunked
         {
-            panic!("KAL_PAIR1_INVKEEP_OUTSIDE_LAMBDA is only implemented for the normal pair1 path");
+            panic!(
+                "KAL_PAIR1_INVKEEP_OUTSIDE_LAMBDA is only implemented for the normal pair1 path"
+            );
         }
         if affine_combined_y || env_flag_enabled("POINT_ADD_AFFINE_COMBINED_Y", true) {
             panic!("KAL_PAIR1_INVKEEP_OUTSIDE_LAMBDA requires POINT_ADD_AFFINE_COMBINED_Y=0 so ty is zero before cleanup aliasing");
@@ -10044,10 +10035,18 @@ pub fn build() -> Vec<Op> {
     if std::env::var("SINGLE_INV_STRATEGY_C_BENCH").ok().as_deref() == Some("1") {
         emit_single_inv_strategy_c_shape_benchmark_scaffold(b, p);
     }
-    if std::env::var("POINT_ADD_PROJECTIVE_N64_PROBE").ok().as_deref() == Some("1") {
+    if std::env::var("POINT_ADD_PROJECTIVE_N64_PROBE")
+        .ok()
+        .as_deref()
+        == Some("1")
+    {
         emit_projective_n64_probe(b, p);
     }
-    if std::env::var("POINT_ADD_LUOHAN_EEA_N64_PROBE").ok().as_deref() == Some("1") {
+    if std::env::var("POINT_ADD_LUOHAN_EEA_N64_PROBE")
+        .ok()
+        .as_deref()
+        == Some("1")
+    {
         emit_luohan_eea_n64_probe(b, p);
     }
     if std::env::var("CENTERED_RESTORING_QBIT_BENCH")
@@ -10057,7 +10056,6 @@ pub fn build() -> Vec<Op> {
     {
         emit_centered_restoring_qbit_benchmark_scaffold(b);
     }
-
 
     // ── DUMMY_TOFFOLIS: noise-injection knob for harness sensitivity tests.
     // Adds N pairs of CCX(a, b, c) followed by CCX(a, b, c) which cancel
@@ -10095,7 +10093,10 @@ pub fn build() -> Vec<Op> {
 
     if std::env::var("TRACE_PHASE_LOCAL_PEAK").is_ok() {
         for (ph, (a, op)) in b.phase_local_peaks.iter() {
-            eprintln!("LOCAL_PHASE_PEAK phase='{}' active={} ops_idx={}", ph, a, op);
+            eprintln!(
+                "LOCAL_PHASE_PEAK phase='{}' active={} ops_idx={}",
+                ph, a, op
+            );
         }
     }
 
@@ -10141,9 +10142,7 @@ pub fn build() -> Vec<Op> {
         > = std::collections::BTreeMap::new();
         for (a, ph, op, counts) in b.owner_snapshots.iter() {
             if *a + delta >= pk {
-                let entry = best
-                    .entry(*ph)
-                    .or_insert((*a, *op, counts.clone()));
+                let entry = best.entry(*ph).or_insert((*a, *op, counts.clone()));
                 if *a > entry.0 {
                     *entry = (*a, *op, counts.clone());
                 }
@@ -10160,10 +10159,7 @@ pub fn build() -> Vec<Op> {
         // phase, with their minimum count across those phases.
         let mut intersection: Option<std::collections::BTreeMap<&'static str, u32>> = None;
         for (ph, (a, op, counts)) in best.iter() {
-            eprintln!(
-                "PEAK_OWNER_PHASE phase='{}' active={} op_idx={}",
-                ph, a, op
-            );
+            eprintln!("PEAK_OWNER_PHASE phase='{}' active={} op_idx={}", ph, a, op);
             let mut sum: u32 = 0;
             // Sort labels by count desc for readability.
             let mut sorted: Vec<(&&'static str, &u32)> = counts.iter().collect();

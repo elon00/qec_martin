@@ -991,4 +991,3 @@ pub fn cisub_dirty_2clean_classical(
         b.cx(ctrl, q_target[k]);
     }
 }
-

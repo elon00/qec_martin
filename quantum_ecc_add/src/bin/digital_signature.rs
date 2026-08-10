@@ -1,5 +1,5 @@
-use k256::ecdsa::{SigningKey, Signature, VerifyingKey};
 use k256::ecdsa::signature::{Signer, Verifier};
+use k256::ecdsa::{Signature, SigningKey, VerifyingKey};
 use rand_core::OsRng;
 
 fn main() {
@@ -26,14 +26,16 @@ fn main() {
         Err(_) => println!("❌ Fraud! This seal is forged!"),
     }
 
-    // 6. Hacker Attack 
+    // 6. Hacker Attack
     // Suppose a hacker changed the message from "North" to "South" along the way
     println!("\n--- Hacker tried to alter the message ---");
     let fake_message = b"Move the Quantum Treasure to the South Vault!";
-    
+
     //Now the Commander checks this new (fake) message against the old seal
     match public_key.verify(fake_message, &signature) {
         Ok(_) => println!("✅ Verification successful!"),
-        Err(_) => println!("🚨 Alarm! The message was tampered with in transit! The seal doesn't match!"),
+        Err(_) => {
+            println!("🚨 Alarm! The message was tampered with in transit! The seal doesn't match!")
+        }
     }
 }
