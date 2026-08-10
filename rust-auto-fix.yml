@@ -1,0 +1,58 @@
+name: Rust Auto Fix & Lint
+
+on:
+  push:
+    branches: [master, main, fix/*, feature/*]
+  pull_request:
+    branches: [master, main]
+
+permissions:
+  contents: write
+
+jobs:
+  rust-auto-fix:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./quantum_ecc_add
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: quantum_ecc_add
+
+      - name: Auto-fix with cargo fmt
+        run: cargo fmt --all
+
+      - name: Auto-fix with clippy
+        run: cargo clippy --all-targets --all-features --fix --allow-dirty --allow-staged
+        continue-on-error: true
+
+      - name: Check for changes
+        id: verify-changed-files
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push fixes
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: auto-fix rust formatting and clippy lints [skip ci]"
+          git push
