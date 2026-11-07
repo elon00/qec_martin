@@ -1,0 +1,122 @@
+{
+  "engine": "REA_Reverse_Engineer_Anything",
+  "status": "STRUCTURE_RECONSTRUCTED",
+  "analyzed_files": 38,
+  "manifest": {
+    "delete_duplicates.py": {
+      "bytes": 5409
+    },
+    "qec-pre-commit-config.yaml": {
+      "bytes": 463
+    },
+    "qec_auto_fix.py": {
+      "bytes": 6651
+    },
+    "README.md": {
+      "bytes": 1091
+    },
+    "rust-auto-fix.yml": {
+      "bytes": 1647
+    },
+    "rust-ci.yml": {
+      "bytes": 892
+    },
+    "rustfmt.toml": {
+      "bytes": 205
+    },
+    "quantum_ecc_add\\benchmark.json": {
+      "bytes": 438
+    },
+    "quantum_ecc_add\\benchmark.sh": {
+      "bytes": 8947
+    },
+    "quantum_ecc_add\\Cargo.lock": {
+      "bytes": 52153
+    },
+    "quantum_ecc_add\\Cargo.toml": {
+      "bytes": 865
+    },
+    "quantum_ecc_add\\message.rs": {
+      "bytes": 721
+    },
+    "quantum_ecc_add\\NOTICE": {
+      "bytes": 1663
+    },
+    "quantum_ecc_add\\README.md": {
+      "bytes": 5628
+    },
+    "quantum_ecc_add\\results.tsv": {
+      "bytes": 690
+    },
+    "quantum_ecc_add\\rust-toolchain": {
+      "bytes": 33
+    },
+    "quantum_ecc_add\\setup.sh": {
+      "bytes": 7436
+    },
+    "quantum_ecc_add\\Superfast_Encryption.rs": {
+      "bytes": 1801
+    },
+    "scripts\\rea_inspector.py": {
+      "bytes": 1485
+    },
+    "scripts\\rsi_engine.py": {
+      "bytes": 2039
+    },
+    "tests\\reality_check_harness.py": {
+      "bytes": 1250
+    },
+    ".github\\workflows\\qmoosa-rsi-rea-sync.yml": {
+      "bytes": 531
+    },
+    ".github\\workflows\\stale.yml": {
+      "bytes": 0
+    },
+    ".github\\workflows\\summary.yml": {
+      "bytes": 0
+    },
+    "quantum_ecc_add\\src\\circuit.rs": {
+      "bytes": 14011
+    },
+    "quantum_ecc_add\\src\\lib.rs": {
+      "bytes": 846
+    },
+    "quantum_ecc_add\\src\\lwe_encryption.rs": {
+      "bytes": 2499
+    },
+    "quantum_ecc_add\\src\\main.rs": {
+      "bytes": 1669
+    },
+    "quantum_ecc_add\\src\\sim.rs": {
+      "bytes": 8725
+    },
+    "quantum_ecc_add\\src\\weierstrass_elliptic_curve.rs": {
+      "bytes": 4621
+    },
+    "quantum_ecc_add\\src\\bin\\build_circuit.rs": {
+      "bytes": 3645
+    },
+    "quantum_ecc_add\\src\\bin\\digital_signature.rs": {
+      "bytes": 1825
+    },
+    "quantum_ecc_add\\src\\bin\\ecc_key_gen.rs": {
+      "bytes": 1252
+    },
+    "quantum_ecc_add\\src\\bin\\eval_circuit.rs": {
+      "bytes": 20651
+    },
+    "quantum_ecc_add\\src\\bin\\lattice_simulation.rs": {
+      "bytes": 1320
+    },
+    "quantum_ecc_add\\src\\point_add\\fermat_inv.rs": {
+      "bytes": 6609
+    },
+    "quantum_ecc_add\\src\\point_add\\mod.rs": {
+      "bytes": 358089
+    },
+    "quantum_ecc_add\\src\\point_add\\venting.rs": {
+      "bytes": 35710
+    }
+  },
+  "timestamp": 1794019701
+}
